@@ -5,8 +5,8 @@
             <div class="avatar_box">
                 <img src="../assets/logo.png" alt="logo">
             </div>
-                <!-- 登陆表单区域 -->
-            <el-form :model="loginForm" :rules="loginFormRules" label-width="0px" class="login_form" >
+            <!-- 登陆表单区域 -->
+            <el-form ref="loginFormRef" :model="loginForm" :rules="loginFormRules" label-width="0px" class="login_form" >
                 <!-- 用户名 -->
                 <el-form-item prop='username'>
                     <el-input v-model="loginForm.username" prefix-icon="iconfont icon-denglu"></el-input>
@@ -18,7 +18,7 @@
                 <!-- 按钮区域 -->
                 <el-form-item class="btns">
                     <el-button type="primary">登陆</el-button>
-                    <el-button type="info">重置</el-button>
+                    <el-button type="info" @click="resetLoginForm">重置</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -30,8 +30,8 @@ export default {
     return {
       // 这是登陆表单的数据
       loginForm: {
-        username: 'zs',
-        password: '123'
+        username: '',
+        password: ''
       },
       //   表单的验证规则对象
       loginFormRules: {
@@ -40,12 +40,18 @@ export default {
           { required: true, message: '请输入登陆名称', trigger: 'blur' },
           { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
         ],
-        // 密码
+        // 验证密码是否合法
         password: [
           { required: true, message: '请输入登陆密码', trigger: 'blur' },
           { min: 6, max: 15, message: '长度在 6 到 15 个字符', trigger: 'blur' }
         ]
       }
+    }
+  },
+  methods: {
+    //   点击重置按钮，登陆重置表单
+    resetLoginForm () {
+      this.$refs.loginFormRef.resetFields()
     }
   }
 }
