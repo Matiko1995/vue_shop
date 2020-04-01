@@ -17,7 +17,7 @@
                 </el-form-item>
                 <!-- 按钮区域 -->
                 <el-form-item class="btns">
-                    <el-button type="primary">登陆</el-button>
+                    <el-button type="primary" @click="login">登陆</el-button>
                     <el-button type="info" @click="resetLoginForm">重置</el-button>
                 </el-form-item>
             </el-form>
@@ -30,8 +30,8 @@ export default {
     return {
       // 这是登陆表单的数据
       loginForm: {
-        username: '',
-        password: ''
+        username: 'admin',
+        password: '123456'
       },
       //   表单的验证规则对象
       loginFormRules: {
@@ -43,7 +43,7 @@ export default {
         // 验证密码是否合法
         password: [
           { required: true, message: '请输入登陆密码', trigger: 'blur' },
-          { min: 6, max: 15, message: '长度在 6 到 15 个字符', trigger: 'blur' }
+          { min: 5, max: 15, message: '长度在 6 到 15 个字符', trigger: 'blur' }
         ]
       }
     }
@@ -52,6 +52,21 @@ export default {
     //   点击重置按钮，登陆重置表单
     resetLoginForm () {
       this.$refs.loginFormRef.resetFields()
+    },
+    login () {
+      this.$refs.loginFormRef.validate(async valid => { // valid==验证的结果
+        // console.log(valid)
+        if (!valid) return
+        const { data: res } = await this.$http.post('login', this.loginForm)
+        if (res.meta.status !== 200) return this.$message.error('登陆失败')
+        this.$message.success('登陆成功')
+        // 1. 将登陆成功之后的token，保存到客户端的sessionStorage 中
+        //  1.1 项目中出了登陆之外的其他API接口，必须在登陆之后才能访问
+        //  1.2 token 只应在当前网站打开期间生效，所以将token 保存在sessionStorage中
+        window.sessionStorage.setItem('token', res.data.token)
+        // 2. 通过编程式导航跳转到后台主页，路由地址是 /home
+        this.$router.push('/home')
+      })
     }
   }
 }
