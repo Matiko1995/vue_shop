@@ -1,6 +1,6 @@
 <template>
     <div>
-        welcome
+        欢迎回来
     </div>
 </template>
 <script>
